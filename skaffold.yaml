@@ -1,0 +1,62 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: homelab-cicd-helloworld
+build:
+  artifacts:
+  - image: docker.io/awslife/homelab-cicd-helloworld
+    kaniko:
+      cleanup: true
+      dockerfile: Dockerfile
+      image: gcr.io/kaniko-project/executor
+      volumeMounts:
+      - name: kaniko-secret
+        mountPath: "/kaniko/.docker"
+        readOnly: true
+  cluster:
+    volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: kaniko-secret
+  tagPolicy:
+    customTemplate:
+      template: "{{.DATETIME}}-{{.COMMITHASH}}"
+      components:
+      - name: DATETIME
+        dateTime:
+          format: "2006-01-02"
+          timezone: "UTC"
+      - name: COMMITHASH
+        gitCommit:
+          variant: AbbrevCommitSha
+# deploy:
+#   kustomize:
+#     paths:
+#     - kubernetes/base
+#     # defaultNamespace: homelab
+#     # manifests: []
+profiles:
+- name: prod
+  deploy:
+    kustomize:
+      paths:
+      - kubernetes/overlays/prod
+  patches:
+  - op: replace
+    path: /build/tagPolicy/customTemplate/template
+    value: "{{.COMMITHASH}}"
+  - op: replace
+    path: /build/artifacts/0/kaniko/dockerfile
+    value: app/helloworld/Dockerfile-prod
+- name: dev
+  deploy:
+    kustomize:
+      paths:
+      - kubernetes/overlays/dev
+  patches:
+  - op: replace
+    path: /build/tagPolicy/customTemplate/template
+    value: "dev-{{.COMMITHASH}}"
+  - op: replace
+    path: /build/artifacts/0/kaniko/dockerfile
+    value: app/helloworld/Dockerfile-dev

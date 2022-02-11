@@ -1,0 +1,8 @@
+FROM golang:1.17-alpine as builder
+COPY app/ .
+RUN go build -o /app helloworld/main.go
+
+FROM alpine:3.10
+ENV GOTRACEBACK=single
+CMD ["./app"]
+COPY --from=builder /app .

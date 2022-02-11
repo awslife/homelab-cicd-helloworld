@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/ports/0
+  value:
+    protocol: TCP
+    port: 8080
+    targetPort: http-port

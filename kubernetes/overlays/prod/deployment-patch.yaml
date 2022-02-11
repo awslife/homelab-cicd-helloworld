@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelab-cicd-helloworld-deployment
+  labels:
+    app: homelab-cicd-helloworld
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      app: homelab-cicd-helloworld
+      tier: backend
+  template:
+    spec:
+      containers:
+      - name: homelab-cicd-helloworld
+

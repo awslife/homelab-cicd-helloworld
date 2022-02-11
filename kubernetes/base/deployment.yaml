@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelab-cicd-helloworld-deployment
+  labels:
+    app: homelab-cicd-helloworld
+    tier: backend
+spec:
+  selector:
+    matchLabels:
+      app: homelab-cicd-helloworld
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: homelab-cicd-helloworld
+        tier: backend
+    spec:
+      containers:
+      - name: homelab-cicd-helloworld
+        image: docker.io/awslife/homelab-cicd-helloworld
+        command: ["/bin/sh", "-c"]
+        args: ["/app"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        ports:
+        - name: http-port
+          containerPort: 8080

@@ -13,3 +13,15 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# backup files
+*.bak
+
+# Docker config
+config.json
+
+# direnv
+.envrc
+
+# kubernetes
+.kube/

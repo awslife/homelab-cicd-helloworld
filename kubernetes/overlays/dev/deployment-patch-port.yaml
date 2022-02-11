@@ -1,0 +1,5 @@
+- op: replace
+  path: /spec/template/spec/containers/0/ports/0
+  value:
+    name: http-port
+    containerPort: 8080
